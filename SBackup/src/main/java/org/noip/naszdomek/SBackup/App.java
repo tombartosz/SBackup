@@ -1,13 +1,5 @@
 package org.noip.naszdomek.SBackup;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-    }
+public interface App {
+	public void run();
 }
