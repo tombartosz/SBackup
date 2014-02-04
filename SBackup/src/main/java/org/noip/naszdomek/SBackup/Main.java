@@ -19,7 +19,7 @@ public class Main
     public static void main( String[] args ) throws IOException
     {
 
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("/applicationContext.xml");
                
         Main main = context.getBean(Main.class);
         
