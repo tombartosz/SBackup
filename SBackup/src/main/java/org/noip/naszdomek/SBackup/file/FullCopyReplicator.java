@@ -1,7 +1,11 @@
 package org.noip.naszdomek.SBackup.file;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,10 +17,10 @@ import org.noip.naszdomek.SBackup.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
-public class CopyReplicator implements Replicator {
+@Component("fullCopyReplicator")
+public class FullCopyReplicator implements Replicator {
 
-	private final Logger LOGGER = Logger.getLogger(CopyReplicator.class);
+	private final Logger LOGGER = Logger.getLogger(FullCopyReplicator.class);
 
 	@Autowired
 	private Config config;
@@ -28,7 +32,7 @@ public class CopyReplicator implements Replicator {
 	private Compressor compressor;
 
 	@Override
-	public void replicate(Set<File> files) throws IOException {
+	public void replicate(Set<File> files, Set<String> deletedFiles) throws IOException {
 		String replace = config.getDirectoryToBackup().getAbsolutePath();
 		String replacement = config.getBackupDirectory().getAbsolutePath();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS");
@@ -51,6 +55,8 @@ public class CopyReplicator implements Replicator {
 
 		File checksumFile = new File(config.getBackupDirectory(), uniquePart
 				+ "_checksums.txt");
+		File infoFile = new File(config.getBackupDirectory(), uniquePart
+				+ "_info.txt");
 		
 		checksumComputator.createChecksumFile(files, checksumFile);
 		
@@ -60,6 +66,25 @@ public class CopyReplicator implements Replicator {
 		compressor.compress(new File(replacement), compressedFile);
 		
 		Utils.deleteDirectory(new File(replacement));
+		
+		try {
+
+			Writer out = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(infoFile), "UTF8"));
+
+			if (deletedFiles != null)
+			for (String path : deletedFiles) {
+
+				LOGGER.debug("Deleted file: " + path);
+				out.append(path).append("\r\n");
+			}
+
+			out.flush();
+			out.close();
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 

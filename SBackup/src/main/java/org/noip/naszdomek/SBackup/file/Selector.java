@@ -5,4 +5,6 @@ import java.util.Set;
 
 public interface Selector {
 	public Set<File> getFilesSelectedToBackup();
+	
+	public Set<String> getRemovedFiles();
 }

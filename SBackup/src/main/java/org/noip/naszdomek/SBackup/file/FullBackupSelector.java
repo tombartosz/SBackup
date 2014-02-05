@@ -9,7 +9,7 @@ import org.noip.naszdomek.SBackup.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("fullBackupSelector")
 public class FullBackupSelector implements Selector {
 
 	private final Logger LOGGER = Logger.getLogger(FullBackupSelector.class);
@@ -19,9 +19,7 @@ public class FullBackupSelector implements Selector {
 
 	@Override
 	public Set<File> getFilesSelectedToBackup() {
-
 		return selectFiles(config.getDirectoryToBackup());
-
 	}
 
 	private Set<File> selectFiles(File directory) {
@@ -36,6 +34,11 @@ public class FullBackupSelector implements Selector {
 			}
 		}
 		return selectedFiles;
+	}
+
+	@Override
+	public Set<String> getRemovedFiles() {
+		return null;
 	}
 
 }

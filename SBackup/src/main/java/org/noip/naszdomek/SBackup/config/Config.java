@@ -11,5 +11,7 @@ public interface Config {
 	public File getBackupDirectory();
 	
 	public Boolean isConfigured();
+	
+	public BackupType getBackupType();
 
 }

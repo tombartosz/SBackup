@@ -3,6 +3,7 @@ package org.noip.naszdomek.SBackup.config.impl;
 import java.io.File;
 
 import org.apache.log4j.Logger;
+import org.noip.naszdomek.SBackup.config.BackupType;
 import org.noip.naszdomek.SBackup.config.Config;
 import org.springframework.stereotype.Component;
 
@@ -17,30 +18,38 @@ public class DefaultConfig implements Config {
 	private File directoryToBackup = null;
 
 	private File backupDirectory = null;
+	
+	private BackupType backupType = null;
 
 	public void setCmdParams(String[] args) {
 		LOGGER.debug("Setting commandline parameters");
 
-		if (args != null && args.length > 1) {
+		if (args != null && args.length > 2) {
 			parseDirectoryToBackup(args);
 			parseBackupDirectory(args);
+			parseCommand(args);
 		}
 
 		this.configured = checkConfiguration();
 	}
 
 	private void parseBackupDirectory(String[] args) {
-		String backupDestinationPath = args[1];
+		String backupDestinationPath = args[2];
 		LOGGER.info("Backup destination path is: " + backupDestinationPath);
 		this.backupDirectory = new File(backupDestinationPath);
 		
 	}
 
 	private void parseDirectoryToBackup(String[] args) {
-		String backupSourcePath = args[0];
+		String backupSourcePath = args[1];
 		LOGGER.info("Backup source path is: " + backupSourcePath);
 		this.directoryToBackup = new File(backupSourcePath);
-
+	}
+	
+	private void parseCommand(String[] args) {
+		String command = args[0];
+		LOGGER.info("Command is: " + command);
+		this.backupType = BackupType.valueOf(command.trim().toUpperCase());
 	}
 
 	private Boolean checkConfiguration() {
@@ -76,7 +85,7 @@ public class DefaultConfig implements Config {
 	}
 
 	public File getDirectoryToBackup() {
-		return directoryToBackup;
+		return this.directoryToBackup;
 	}
 
 	public Boolean isConfigured() {
@@ -84,7 +93,11 @@ public class DefaultConfig implements Config {
 	}
 
 	public File getBackupDirectory() {
-		return backupDirectory;
+		return this.backupDirectory;
+	}
+
+	public BackupType getBackupType() {
+		return this.backupType;
 	}
 
 }

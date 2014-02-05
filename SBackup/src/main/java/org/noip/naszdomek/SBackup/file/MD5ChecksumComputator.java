@@ -52,7 +52,7 @@ public class MD5ChecksumComputator implements ChecksumComputator {
 
 	}
 
-	private Map<String, String> checksum(Set<File> files) {
+	public Map<String, String> checksum(Set<File> files) {
 		Map<String, String> ret = new TreeMap<>(new Comparator<String>() {
 
 			@Override
